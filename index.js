@@ -13,10 +13,12 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(600, 600);
+  createCanvas(windowWidth, windowHeight);
 
 
   months = [
+    "Jan",
+    "Feb",
     "Mar",
     "Apr",
     "May",
@@ -27,15 +29,14 @@ function setup() {
     "Oct",
     "Nov",
     "Dec",
-    "Jan",
-    "Feb",
+    
   ];
 
   let row = data.getRow(0)
 }
 
 function draw() {
-  background(0);
+  background(51);
   translate(width / 2, height / 2);
   textAlign(CENTER, CENTER);
   textSize(16)
@@ -45,7 +46,7 @@ function draw() {
   circle(0, 0, zeroRadius * 2);
   fill(255);
   noStroke();
-  text("0°", zeroRadius + 10, 0);
+  text("10°", zeroRadius - 15, 0);
 
   stroke(255);
   strokeWeight(2);
@@ -54,7 +55,7 @@ function draw() {
   fill(255);
   noStroke();
   textSize(14);
-  text("1°", oneRadius + 10, 0)
+  text("30°", oneRadius - 15, 0)
 
   stroke(255);
   strokeWeight(2);
@@ -65,7 +66,7 @@ function draw() {
   for (let i = 0; i < months.length; i++) {
     noStroke();
     fill(255);
-    textSize(24);
+    textSize(15);
 
     let angle = map(i, 0, months.length, 0, TWO_PI);
     push();
@@ -77,7 +78,7 @@ function draw() {
     pop();
   }
   let year = data.getRow(currentRow).get("Year");
-  textSize(32)
+  textSize(22)
 
   text(year, 0, 0);
 
@@ -106,7 +107,7 @@ function draw() {
       let anomaly = row.get(months[i]);
         anomaly = parseFloat(anomaly);
         
-        let angle = map(i, 0, months.length, 0, TWO_PI) - PI / 3;
+        let angle = map(i, 0, months.length, 0, TWO_PI) ;
 
         let pr = map(previousAnomaly, 10, 31, zeroRadius, oneRadius);
         let r = map(anomaly, 10, 31, zeroRadius, oneRadius);
@@ -122,18 +123,22 @@ function draw() {
         let y2 = pr * sin(angle - PI / 6);
         
         if (!firstValue) {
-          let cold = color(0, 0, 255);
-          let warm = color(255, 0, 0);
+          let cold = color(20, 20, 255);
+          let warm = color(255, 30, 30);
           let zero = color(255);
 
           let lineColor = zero;
           let avg = (anomaly + previousAnomaly) * 0.5;
 
-          if (avg < 20) {
-            lineColor = lerpColor(zero, cold, abs(avg));
+          if (avg < 15) {
+            lineColor = lerpColor(zero, color(135,206,235), abs(avg));
+          }
+          if(avg > 15 && avg < 20) {
+            lineColor = lerpColor(zero, color(30,144,255), abs(avg));
+
           }
           if (avg > 25) {
-            lineColor = lerpColor(zero, warm, abs(avg));
+            lineColor = lerpColor(zero, color(214,0,28), abs(avg));
           }
           stroke(lineColor);
           
@@ -142,8 +147,10 @@ function draw() {
         }
         firstValue = false;
         previousAnomaly = anomaly;
+        
       }
     }
+    
   
 
  
@@ -155,4 +162,7 @@ function draw() {
       noLoop();
     }
   }
+  
+   
+  frameRate(10)
 }
